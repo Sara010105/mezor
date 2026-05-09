@@ -1,0 +1,64 @@
+/* ── Hero shimmer / shine sweep animation ──────────────────── */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
+}
+
+.hero-shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-shimmer-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 20%,
+      rgba(255, 255, 255, 0.25) 40%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.25) 60%,
+      rgba(255, 255, 255, 0.08) 80%,
+      transparent 100%);
+  transform: translateX(-100%) skewX(-15deg);
+  animation: shimmer-sweep 3s ease-in-out infinite;
+  animation-delay: 1.5s;
+  pointer-events: none;
+}
+
+/* ── Hero title crystalline shimmer ──────────────────────── */
+@keyframes title-shine {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.hero-title-shine {
+  background: linear-gradient(90deg,
+      #ffffff 0%,
+      #ffffff 35%,
+      #f0d4b8 42%,
+      #ffecd2 50%,
+      #f0d4b8 58%,
+      #ffffff 65%,
+      #ffffff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: title-shine 4s linear infinite;
+  animation-delay: 2s;
+}
