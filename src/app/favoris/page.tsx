@@ -8,6 +8,8 @@ import { formatPrice, cn } from '../components/ui/utils';
 import FavoriteButton from '../components/FavoriteButton';
 import { ShoppingBag } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Mes Favoris | Mezor Haute Joaillerie',
   description: 'Retrouvez vos pièces préférées de notre collection de haute joaillerie.',
