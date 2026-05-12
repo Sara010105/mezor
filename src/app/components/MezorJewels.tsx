@@ -618,7 +618,8 @@ export function MezorJewels() {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* ── Brand Story ─────────────────────────────────────── */}
       <section className="bg-[#DDC2A7] py-16 md:py-24">
