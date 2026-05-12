@@ -1,31 +1,47 @@
-import { Jewelry } from '../../../../../models/Jewelry';
+import { Bijou } from '../../../../../models/Bijou';
 import { connectDatabase } from '../../../../../server/db';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  await connectDatabase();
-  const { searchParams } = new URL(request.url);
-  const query = searchParams.get('q') || '';
+  try {
+    await connectDatabase();
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get('q') || '';
 
-  if (!query) {
-    const jewelries = await Jewelry.find().sort({ createdAt: -1 });
-    return Response.json(jewelries);
+    let bijoux;
+    if (!query) {
+      bijoux = await Bijou.find().sort({ creeLe: -1 });
+    } else {
+      // Handle specific category mapping
+      let categoryFilter = query.toLowerCase();
+      if (categoryFilter.includes('neck')) categoryFilter = 'colliers';
+      else if (categoryFilter.includes('hand')) categoryFilter = 'bagues';
+      else if (categoryFilter.includes('foot')) categoryFilter = 'boucles';
+
+      bijoux = await Bijou.find({
+        $or: [
+          { nom: { $regex: query, $options: 'i' } },
+          { categorie: { $regex: categoryFilter, $options: 'i' } },
+          { categorie: { $regex: query, $options: 'i' } }
+        ]
+      }).sort({ creeLe: -1 });
+    }
+
+    const transformedBijoux = bijoux.map(b => {
+      const obj = b.toObject();
+      return {
+        ...obj,
+        name: obj.nom,
+        price: obj.prix,
+        category: obj.categorie,
+        mainImage: obj.imagePrincipale,
+        transparentImage: obj.imageTransparente
+      };
+    });
+
+    return Response.json(transformedBijoux);
+  } catch (error: any) {
+    return Response.json({ error: error.message }, { status: 500 });
   }
-
-  // Handle specific category mapping from prompt
-  let categoryFilter = query.toLowerCase();
-  if (categoryFilter.includes('neck')) categoryFilter = 'necklaces';
-  else if (categoryFilter.includes('hand')) categoryFilter = 'rings';
-  else if (categoryFilter.includes('foot')) categoryFilter = 'earrings';
-
-  const jewelries = await Jewelry.find({
-    $or: [
-      { name: { $regex: query, $options: 'i' } },
-      { category: { $regex: categoryFilter, $options: 'i' } },
-      { category: { $regex: query, $options: 'i' } }
-    ]
-  }).sort({ createdAt: -1 });
-
-  return Response.json(jewelries);
 }

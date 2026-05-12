@@ -7,6 +7,8 @@ export interface IJewelry {
   category: string;
   mainImage: string;
   transparentImage: string;
+  material?: string;
+  stock?: number;
 }
 
 const jewelrySchema = new mongoose.Schema<IJewelry>(
@@ -16,7 +18,9 @@ const jewelrySchema = new mongoose.Schema<IJewelry>(
     description: { type: String, required: true, trim: true },
     category: { type: String, required: true, trim: true, lowercase: true },
     mainImage: { type: String, required: true, trim: true },
-    transparentImage: { type: String, required: true, trim: true },
+    transparentImage: { type: String, trim: true, default: '' },
+    material: { type: String, trim: true },
+    stock: { type: Number, default: 0 },
   },
   { timestamps: true, collection: 'jewelries' },
 );

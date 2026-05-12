@@ -1,20 +1,18 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export interface IContactMessage {
+export interface IContactMessage extends Document {
   name: string;
   email: string;
   message: string;
+  dateEnvoi: Date;
 }
 
-const contactMessageSchema = new mongoose.Schema<IContactMessage>(
-  {
-    name: { type: String, required: true, trim: true },
-    email: { type: String, required: true, trim: true, lowercase: true },
-    message: { type: String, required: true, trim: true },
-  },
-  { timestamps: true, collection: 'contact_messages' },
-);
+const ContactMessageSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  message: { type: String, required: true },
+  dateEnvoi: { type: Date, default: Date.now },
+}, { collection: 'contact_messages' });
 
-export const ContactMessage =
-  mongoose.models.ContactMessage ||
-  mongoose.model<IContactMessage>('ContactMessage', contactMessageSchema);
+export const ContactMessage: Model<IContactMessage> = 
+  mongoose.models.ContactMessage || mongoose.model<IContactMessage>('ContactMessage', ContactMessageSchema);
