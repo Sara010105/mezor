@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
+
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -12,7 +13,7 @@ if (!cached) {
 }
 
 export async function connectDatabase() {
-  const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mezor_db';
+  const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://saraezzogary2_db_user:yPONBW4b3a016lSG@mezordb.kje5nkz.mongodb.net/';
 
   if (!MONGODB_URI) {
     throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
