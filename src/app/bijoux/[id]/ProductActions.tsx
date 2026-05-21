@@ -11,9 +11,10 @@ interface ProductActionsProps {
   bijouId: string;
   stock: number;
   nom: string;
+  selectedFinish: string;
 }
 
-export default function ProductActions({ bijouId, stock, nom }: ProductActionsProps) {
+export default function ProductActions({ bijouId, stock, nom, selectedFinish }: ProductActionsProps) {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function ProductActions({ bijouId, stock, nom }: ProductActionsPr
     try {
       // Assuming a guest user or some mechanism to identify the user
       // For now, using a placeholder for utilisateurId if not handled by auth
-      const result = await addToCart("guest_user", bijouId, quantity);
+      const result = await addToCart("guest_user", bijouId, quantity, selectedFinish);
       if (result.success) {
         toast.success(`${nom} ajouté au panier`);
       } else {

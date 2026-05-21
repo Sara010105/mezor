@@ -35,7 +35,7 @@ export async function GET(request: Request) {
         name: obj.nom,
         price: obj.prix,
         category: obj.categorie,
-        mainImage: obj.imagePrincipale,
+        imagesFinitions: obj.imagesFinitions,
         transparentImage: obj.imageTransparente
       };
     });

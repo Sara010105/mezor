@@ -9,13 +9,19 @@ export interface JewelryProduct {
   price: number;
   description: string;
   category: string;
-  mainImage: string;
+  imagesFinitions: {
+    orJaune: string;
+    orRose: string;
+    argent: string;
+  };
+  videos?: string[];
   transparentImage?: string;
 }
 
 export interface CartItem {
   product: JewelryProduct;
   quantity: number;
+  selectedFinish?: string;
 }
 
 /* ─── LocalStorage helpers ───────────────────────────────────── */
@@ -61,30 +67,30 @@ function getCartSnapshot() {
   return cartSnapshot;
 }
 
-export function addToCart(product: JewelryProduct, qty = 1) {
-  const existing = cartSnapshot.find((c) => c.product._id === product._id);
+export function addToCart(product: JewelryProduct, qty = 1, selectedFinish = '18k Gold Vermeil') {
+  const existing = cartSnapshot.find((c) => c.product._id === product._id && c.selectedFinish === selectedFinish);
   if (existing) {
     cartSnapshot = cartSnapshot.map((c) =>
-      c.product._id === product._id ? { ...c, quantity: c.quantity + qty } : c,
+      c.product._id === product._id && c.selectedFinish === selectedFinish ? { ...c, quantity: c.quantity + qty } : c,
     );
   } else {
-    cartSnapshot = [...cartSnapshot, { product, quantity: qty }];
+    cartSnapshot = [...cartSnapshot, { product, quantity: qty, selectedFinish }];
   }
   emitCart();
 }
 
-export function removeFromCart(productId: string) {
-  cartSnapshot = cartSnapshot.filter((c) => c.product._id !== productId);
+export function removeFromCart(productId: string, selectedFinish?: string) {
+  cartSnapshot = cartSnapshot.filter((c) => !(c.product._id === productId && c.selectedFinish === selectedFinish));
   emitCart();
 }
 
-export function updateCartQty(productId: string, quantity: number) {
+export function updateCartQty(productId: string, quantity: number, selectedFinish?: string) {
   if (quantity <= 0) {
-    removeFromCart(productId);
+    removeFromCart(productId, selectedFinish);
     return;
   }
   cartSnapshot = cartSnapshot.map((c) =>
-    c.product._id === productId ? { ...c, quantity } : c,
+    c.product._id === productId && c.selectedFinish === selectedFinish ? { ...c, quantity } : c,
   );
   emitCart();
 }

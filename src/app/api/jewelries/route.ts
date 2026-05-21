@@ -16,7 +16,7 @@ export async function GET() {
         name: obj.nom,
         price: obj.prix,
         category: obj.categorie,
-        mainImage: obj.imagePrincipale,
+        imagesFinitions: obj.imagesFinitions,
         transparentImage: obj.imageTransparente
       };
     });

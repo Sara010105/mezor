@@ -14,6 +14,7 @@ export interface ICommande extends Document {
     bijouId: mongoose.Types.ObjectId;
     quantite: number;
     prixAuMomentAchat: number;
+    finition: string;
   }[];
   creeLe: Date;
 }
@@ -36,6 +37,7 @@ const CommandeSchema: Schema = new Schema({
     bijouId: { type: Schema.Types.ObjectId, ref: 'Bijou', required: true },
     quantite: { type: Number, required: true },
     prixAuMomentAchat: { type: Number, required: true },
+    finition: { type: String, required: true },
   }],
   creeLe: { type: Date, default: Date.now },
 }, { collection: 'commandes' });

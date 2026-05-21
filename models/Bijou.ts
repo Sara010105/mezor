@@ -6,7 +6,12 @@ export interface IBijou extends Document {
   prix: number;
   categorie: string;
   materiau: string;
-  imagePrincipale: string;
+  imagesFinitions: {
+    orJaune: string;
+    orRose: string;
+    argent: string;
+  };
+  videos?: string[];
   imageTransparente?: string;
   stock: number;
   misEnAvant: boolean;
@@ -19,7 +24,12 @@ const BijouSchema: Schema = new Schema({
   prix: { type: Number, required: true },
   categorie: { type: String, required: true },
   materiau: { type: String, required: true },
-  imagePrincipale: { type: String, required: true },
+  imagesFinitions: {
+    orJaune: { type: String, required: true },
+    orRose: { type: String, required: true },
+    argent: { type: String, required: true }
+  },
+  videos: [{ type: String }],
   imageTransparente: { type: String },
   stock: { type: Number, required: true, default: 0 },
   misEnAvant: { type: Boolean, default: false },

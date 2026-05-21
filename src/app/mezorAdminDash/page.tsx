@@ -33,7 +33,12 @@ type Product = {
   prix: number;
   stock: number;
   categorie: string;
-  imagePrincipale: string;
+  imagesFinitions: {
+    orJaune: string;
+    orRose: string;
+    argent: string;
+  };
+  videos?: string[];
   description: string;
 };
 
@@ -82,7 +87,7 @@ export default function AdminPage() {
     prix: '',
     stock: '',
     categorie: '',
-    imagePrincipale: '',
+    imagesFinitions: { orJaune: '', orRose: '', argent: '' },
     description: '',
   });
 
@@ -137,7 +142,7 @@ export default function AdminPage() {
         prix: product.prix.toString(),
         stock: (product.stock || 0).toString(),
         categorie: product.categorie,
-        imagePrincipale: product.imagePrincipale,
+        imagesFinitions: product.imagesFinitions || { orJaune: '', orRose: '', argent: '' },
         description: product.description,
       });
     } else {
@@ -148,7 +153,7 @@ export default function AdminPage() {
         prix: '',
         stock: '',
         categorie: '',
-        imagePrincipale: '',
+        imagesFinitions: { orJaune: '', orRose: '', argent: '' },
         description: '',
       });
     }
@@ -170,7 +175,10 @@ export default function AdminPage() {
       });
       const data = await res.json();
       if (data.secureUrl) {
-        setProductForm(prev => ({ ...prev, imagePrincipale: data.secureUrl }));
+        setProductForm(prev => ({ 
+          ...prev, 
+          imagesFinitions: { ...prev.imagesFinitions, orJaune: data.secureUrl } 
+        }));
         toast.success('Image uploaded successfully');
       }
     } catch (error) {
@@ -467,7 +475,7 @@ export default function AdminPage() {
                       <td className="p-8">
                         <div className="flex items-center gap-6">
                           <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-sm border border-[#F0F0F0]">
-                            <img src={product.imagePrincipale} alt={product.nom} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                            <img src={product.imagesFinitions?.orJaune} alt={product.nom} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                           </div>
                           <div>
                             <span className="text-[14px] font-serif block mb-1" style={{ color: '#2F3C67' }}>{product.nom}</span>

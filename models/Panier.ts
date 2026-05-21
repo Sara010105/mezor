@@ -5,6 +5,7 @@ export interface IPanier extends Document {
   articles: {
     bijouId: mongoose.Types.ObjectId;
     quantite: number;
+    finition: string;
   }[];
   sousTotal: number;
   misAJourLe: Date;
@@ -14,7 +15,8 @@ const PanierSchema: Schema = new Schema({
   utilisateurId: { type: Schema.Types.ObjectId, ref: 'Utilisateur', required: true },
   articles: [{
     bijouId: { type: Schema.Types.ObjectId, ref: 'Bijou', required: true },
-    quantite: { type: Number, required: true, min: 1 }
+    quantite: { type: Number, required: true, min: 1 },
+    finition: { type: String, required: true }
   }],
   sousTotal: { type: Number, default: 0 },
   misAJourLe: { type: Date, default: Date.now }

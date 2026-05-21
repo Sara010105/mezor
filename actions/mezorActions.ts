@@ -19,7 +19,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 /**
  * Adds a jewelry item to a user's cart.
  */
-export async function addToCart(utilisateurId: string, bijouId: string, quantite: number = 1) {
+export async function addToCart(utilisateurId: string, bijouId: string, quantite: number = 1, finition: string = '18k Gold Vermeil') {
   try {
     await connectDatabase();
     
@@ -32,12 +32,12 @@ export async function addToCart(utilisateurId: string, bijouId: string, quantite
         sousTotal: 0,
       });
     } else {
-      const articleExistante = panier.articles.find(a => a.bijouId.toString() === bijouId);
+      const articleExistante = panier.articles.find(a => a.bijouId.toString() === bijouId && a.finition === finition);
       
       if (articleExistante) {
         articleExistante.quantite += quantite;
       } else {
-        panier.articles.push({ bijouId: new mongoose.Types.ObjectId(bijouId) as any, quantite });
+        panier.articles.push({ bijouId: new mongoose.Types.ObjectId(bijouId) as any, quantite, finition });
       }
     }
     
@@ -87,6 +87,7 @@ export async function processCheckout(utilisateurId: string, adresseLivraison: a
     for (const article of articlesToProcess) {
       const bijouId = article.bijouId || article.product?._id;
       const quantite = article.quantite || article.quantity;
+      const finition = article.finition || article.selectedFinish || '18k Gold Vermeil';
       
       if (!bijouId) continue;
 
@@ -100,7 +101,8 @@ export async function processCheckout(utilisateurId: string, adresseLivraison: a
       articlesCommande.push({
         bijouId: bijou._id,
         quantite: quantite,
-        prixAuMomentAchat: bijou.prix
+        prixAuMomentAchat: bijou.prix,
+        finition: finition
       });
       
       montantTotal += bijou.prix * quantite;
@@ -252,11 +254,22 @@ export async function ajouterBijou(formData: FormData) {
 
     console.log('[Server Action] Payload extracted:', { nom, prix, categorie });
 
-    const imagePrincipaleFile = formData.get('imagePrincipale') as File;
+    const imageOrJauneFile = formData.get('imageOrJaune') as File;
+    const imageOrRoseFile = formData.get('imageOrRose') as File;
+    const imageArgentFile = formData.get('imageArgent') as File;
     const imageTransparenteFile = formData.get('imageTransparente') as File;
+    const videosString = formData.get('videos') as string;
+    let videos: string[] = [];
+    if (videosString) {
+      try {
+        videos = JSON.parse(videosString);
+      } catch (e) {
+        console.error('Failed to parse videos', e);
+      }
+    }
 
-    if (!imagePrincipaleFile || imagePrincipaleFile.size === 0) {
-      throw new Error('Image principale manquante ou vide.');
+    if (!imageOrJauneFile || imageOrJauneFile.size === 0 || !imageOrRoseFile || imageOrRoseFile.size === 0 || !imageArgentFile || imageArgentFile.size === 0) {
+      throw new Error('Toutes les images de finitions (Or Jaune, Or Rose, Argent) sont obligatoires.');
     }
     if (!imageTransparenteFile || imageTransparenteFile.size === 0) {
       throw new Error('Image transparente manquante ou vide.');
@@ -265,8 +278,10 @@ export async function ajouterBijou(formData: FormData) {
     console.log('[Server Action] Files verified, starting Cloudinary uploads...');
 
     // 1. Upload images to Cloudinary FIRST
-    const [imagePrincipaleUrl, imageTransparenteUrl] = await Promise.all([
-      uploadToCloudinary(imagePrincipaleFile, 'mezor/bijoux/principale'),
+    const [imageOrJauneUrl, imageOrRoseUrl, imageArgentUrl, imageTransparenteUrl] = await Promise.all([
+      uploadToCloudinary(imageOrJauneFile, 'mezor/bijoux/finitions/or-jaune'),
+      uploadToCloudinary(imageOrRoseFile, 'mezor/bijoux/finitions/or-rose'),
+      uploadToCloudinary(imageArgentFile, 'mezor/bijoux/finitions/argent'),
       uploadToCloudinary(imageTransparenteFile, 'mezor/bijoux/transparente'),
     ]);
 
@@ -281,7 +296,12 @@ export async function ajouterBijou(formData: FormData) {
       materiau,
       stock,
       misEnAvant,
-      imagePrincipale: imagePrincipaleUrl,
+      imagesFinitions: {
+        orJaune: imageOrJauneUrl,
+        orRose: imageOrRoseUrl,
+        argent: imageArgentUrl
+      },
+      videos,
       imageTransparente: imageTransparenteUrl,
       creeLe: new Date(),
     });

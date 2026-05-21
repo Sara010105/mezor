@@ -238,7 +238,7 @@ export function MezorJewels() {
     <div className="min-h-screen bg-[#DDC2A7] overflow-x-hidden">
       
       {/* ── Navigation ──────────────────────────────────────── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#2F3C67]" style={{ borderBottom: '0.5px solid rgba(221,194,167,0.2)' }}>
+      <nav className="fixed top-9 left-0 right-0 z-50 bg-[#2F3C67]" style={{ borderBottom: '0.5px solid rgba(221,194,167,0.2)' }}>
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-4 md:py-5 flex items-center justify-between">
           <div className="flex items-center gap-4 md:gap-10">
             <div className="hidden md:flex items-center gap-10">
@@ -332,7 +332,7 @@ export function MezorJewels() {
               animate={{ x: 0 }} 
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 h-full w-[80%] max-w-sm bg-[#2F3C67] z-[101] shadow-2xl flex flex-col md:hidden"
+              className="fixed top-9 left-0 h-[calc(100%-36px)] w-[80%] max-w-sm bg-[#2F3C67] z-[101] shadow-2xl flex flex-col md:hidden"
             >
               <div className="p-6 flex justify-end border-b border-[#DDC2A7]/10">
                 <button 
@@ -529,7 +529,7 @@ export function MezorJewels() {
                   <div className="aspect-square overflow-hidden bg-[#f9f5f0] relative">
                     <Link href={`/bijoux/${product._id}`}>
                       <ImageWithFallback
-                        src={product.mainImage}
+                        src={product.imagesFinitions?.orJaune || ''}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer"
                       />
@@ -822,7 +822,7 @@ export function MezorJewels() {
               animate={{ x: 0 }} 
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-md bg-[#F9F5F0] z-[101] shadow-2xl flex flex-col"
+              className="fixed top-9 right-0 h-[calc(100%-36px)] w-full max-w-md bg-[#F9F5F0] z-[101] shadow-2xl flex flex-col"
             >
               <div className="p-8 border-b border-[#DDC2A7] flex items-center justify-between">
                 <div>
@@ -847,7 +847,7 @@ export function MezorJewels() {
                   products.filter(p => favoriteIds.includes(p._id)).map((product) => (
                     <div key={product._id} className="flex gap-6 group">
                       <div className="w-24 h-24 bg-white relative overflow-hidden shrink-0">
-                        <ImageWithFallback src={product.mainImage} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <ImageWithFallback src={product.imagesFinitions?.orJaune || ''} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </div>
                       <div className="flex-1 flex flex-col justify-center">
                         <h4 className="text-[#2F3C67] text-[12px] font-serif tracking-wide uppercase mb-1">{product.name}</h4>
@@ -886,7 +886,7 @@ export function MezorJewels() {
               animate={{ x: 0 }} 
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-md bg-[#2F3C67] z-[101] shadow-2xl flex flex-col"
+              className="fixed top-9 right-0 h-[calc(100%-36px)] w-full max-w-md bg-[#2F3C67] z-[101] shadow-2xl flex flex-col"
             >
               <div className="p-8 border-b border-[#DDC2A7]/10 flex items-center justify-between">
                 <div>
@@ -913,28 +913,41 @@ export function MezorJewels() {
                 ) : (
                   <div className="space-y-8">
                     {cartItems.map((item) => (
-                      <div key={item.product._id} className="flex gap-6 group">
+                      <div key={`${item.product._id}-${item.selectedFinish}`} className="flex gap-6 group">
                         <div className="w-24 h-24 bg-[#DDC2A7]/5 overflow-hidden">
-                          <img src={item.product.mainImage} alt={item.product.name} className="w-full h-full object-cover" />
+                          <img 
+                            src={
+                              item.selectedFinish === '18k Rose Gold Vermeil' 
+                                ? item.product.imagesFinitions?.orRose 
+                                : item.selectedFinish === 'S925 Rhodium Vermeil'
+                                  ? item.product.imagesFinitions?.argent
+                                  : item.product.imagesFinitions?.orJaune
+                            } 
+                            alt={item.product.name} 
+                            className="w-full h-full object-cover" 
+                          />
                         </div>
                         <div className="flex-1 py-1">
                           <div className="flex justify-between items-start mb-1">
                             <h4 className="text-white text-[13px] font-serif tracking-wide">{item.product.name}</h4>
                             <button 
-                              onClick={() => removeFromCart(item.product._id)}
+                              onClick={() => removeFromCart(item.product._id, item.selectedFinish)}
                               className="text-[#DDC2A7] opacity-40 hover:opacity-100 transition-opacity"
                             >
                               <Trash2 size={14} strokeWidth={1.2} />
                             </button>
                           </div>
-                          <p className="text-[#DDC2A7] text-[10px] tracking-[0.15em] mb-4 opacity-50 uppercase">{item.product.category}</p>
+                          <p className="text-[#DDC2A7] text-[10px] tracking-[0.15em] mb-1 opacity-50 uppercase">{item.product.category}</p>
+                          {item.selectedFinish && (
+                            <p className="text-[#DDC2A7] text-[9px] tracking-[0.15em] mb-4 opacity-40 uppercase">Finition: {item.selectedFinish}</p>
+                          )}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4 border border-[#DDC2A7]/20 px-3 py-1.5">
-                              <button onClick={() => updateCartQty(item.product._id, item.quantity - 1)} className="text-[#DDC2A7] hover:text-white">
+                              <button onClick={() => updateCartQty(item.product._id, item.quantity - 1, item.selectedFinish)} className="text-[#DDC2A7] hover:text-white">
                                 <Minus size={12} strokeWidth={1} />
                               </button>
                               <span className="text-[#DDC2A7] text-[11px] font-medium w-4 text-center">{item.quantity}</span>
-                              <button onClick={() => updateCartQty(item.product._id, item.quantity + 1)} className="text-[#DDC2A7] hover:text-white">
+                              <button onClick={() => updateCartQty(item.product._id, item.quantity + 1, item.selectedFinish)} className="text-[#DDC2A7] hover:text-white">
                                 <Plus size={12} strokeWidth={1} />
                               </button>
                             </div>
