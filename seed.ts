@@ -1,4 +1,10 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load env vars from .env.local first
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config();
+
 import { Bijou } from './models/Bijou';
 import { connectDatabase } from './server/db';
 
@@ -13,8 +19,11 @@ async function seed() {
       description: 'Bague en or blanc sertie d un diamant central taille brillant.',
       categorie: 'bagues',
       materiau: 'Or Blanc 18K',
-      imagePrincipale:
-        'https://images.unsplash.com/photo-1748023593753-4949fdc19045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      imagesFinitions: {
+        orJaune: 'https://images.unsplash.com/photo-1748023593753-4949fdc19045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+        orRose: 'https://images.unsplash.com/photo-1748023593753-4949fdc19045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+        argent: 'https://images.unsplash.com/photo-1748023593753-4949fdc19045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      },
       imageTransparente:
         'https://res.cloudinary.com/dbjfbmvmt/image/upload/v1746558600/mezor/transparent/ring.png',
       stock: 10,
@@ -25,8 +34,11 @@ async function seed() {
       description: 'Collier raffine en or jaune inspire des ateliers traditionnels.',
       categorie: 'colliers',
       materiau: 'Or Jaune 18K',
-      imagePrincipale:
-        'https://images.unsplash.com/photo-1762505464446-c0760d740aee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      imagesFinitions: {
+        orJaune: 'https://images.unsplash.com/photo-1762505464446-c0760d740aee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+        orRose: 'https://images.unsplash.com/photo-1762505464446-c0760d740aee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+        argent: 'https://images.unsplash.com/photo-1762505464446-c0760d740aee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      },
       imageTransparente:
         'https://res.cloudinary.com/dbjfbmvmt/image/upload/v1746558600/mezor/transparent/necklace.png',
       stock: 5,
@@ -37,8 +49,11 @@ async function seed() {
       description: 'Boucles d oreilles elegantes en perles fines et or rose.',
       categorie: 'boucles',
       materiau: 'Or Rose 18K',
-      imagePrincipale:
-        'https://images.unsplash.com/photo-1704957205327-9fbd44d683b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      imagesFinitions: {
+        orJaune: 'https://images.unsplash.com/photo-1704957205327-9fbd44d683b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+        orRose: 'https://images.unsplash.com/photo-1704957205327-9fbd44d683b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+        argent: 'https://images.unsplash.com/photo-1704957205327-9fbd44d683b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=800',
+      },
       imageTransparente:
         'https://res.cloudinary.com/dbjfbmvmt/image/upload/v1746558600/mezor/transparent/earrings.png',
       stock: 8,
